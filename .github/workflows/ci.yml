@@ -1,0 +1,25 @@
+name: CI - Products API
+
+on:
+  push:
+    branches: [develop, main, feature/**]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./products-api
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+        cache-dependency-path: './products-api/package-lock.json'
+
+    - run: npm install
+    - run: npm run build
+    - run: npm test
