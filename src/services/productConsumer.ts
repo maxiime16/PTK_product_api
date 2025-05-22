@@ -1,12 +1,12 @@
-import { getChannel } from "../lib/rabbitmq";
-import { Product } from "../models/Product";
+import { getChannel } from '../lib/rabbitmq';
+import { Product } from '../models/Product';
 
 /**
  * Consomme l'événement "order.created" pour décrémenter le stock des produits commandés.
  */
 export async function consumeOrderCreated() {
   const channel = getChannel();
-  const queueName = "order.created"; // ou le nom que tu as choisi dans "orders-api"
+  const queueName = 'order.created'; // ou le nom que tu as choisi dans "orders-api"
 
   // Assure l'existence de la queue
   await channel.assertQueue(queueName, { durable: true });
@@ -30,8 +30,7 @@ export async function consumeOrderCreated() {
       //   }
       // }
       const content = JSON.parse(msg.content.toString());
-      console.log("📥 [products-api] Received 'order.created':", content);
-
+      console.log('📥·[products-api]·Received·[order.created]:', content);
       const { items } = content.data; // la liste des produits commandés
       if (Array.isArray(items)) {
         for (const item of items) {
@@ -41,7 +40,7 @@ export async function consumeOrderCreated() {
             product.stock -= item.quantity;
             await product.save();
             console.log(
-              `Stock décrémenté pour le produit ${item.productId}. Nouveau stock: ${product.stock}`
+              `Stock décrémenté pour le produit ${item.productId}. Nouveau stock: ${product.stock}`,
             );
 
             // (Optionnel) Publier un event "product.stockUpdated"
@@ -52,8 +51,7 @@ export async function consumeOrderCreated() {
 
       channel.ack(msg); // accuse réception
     } catch (error) {
-      console.error("❌ Error processing 'order.created':", error);
-      // Selon ta stratégie, tu peux renvoyer en DLQ
+      console.error('❌·Error·processing·[order.created]:', error); // Selon ta stratégie, tu peux renvoyer en DLQ
       channel.nack(msg, false, false);
     }
   });
