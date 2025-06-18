@@ -1,5 +1,5 @@
-import { getChannel } from '../lib/rabbitmq';
-import { Product } from '../models/Product';
+import { getChannel } from '../lib/rabbitmq.js';
+import { Product } from '../models/Product.js';
 
 /**
  * Consomme l'événement "order.created" pour décrémenter le stock des produits commandés.

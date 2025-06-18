@@ -5,7 +5,7 @@ import {
   createNewProduct,
   updateExistingProduct,
   removeProduct,
-} from '../services/products.service';
+} from '../services/products.service.js';
 
 export async function getAllProducts(req: Request, res: Response) {
   try {
