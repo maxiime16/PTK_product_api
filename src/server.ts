@@ -1,11 +1,11 @@
-import express from "express";
-import cors from "cors";
-import helmet from "helmet";
-import compression from "compression";
-import { connectDB } from "./config/mongoose";
-import { connectRabbitMQ } from "./lib/rabbitmq";
-import productsRouter from "./routes/products.routes";
-import { consumeOrderCreated } from "./services/productConsumer";
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import { connectDB } from './config/mongoose.js';
+import { connectRabbitMQ } from './lib/rabbitmq.js';
+import productsRouter from './routes/products.routes.js';
+import { consumeOrderCreated } from './services/productConsumer.js';
 
 const app = express();
 
@@ -16,7 +16,7 @@ app.use(helmet());
 app.use(compression());
 
 // Routes
-app.use("/products", productsRouter);
+app.use('/products', productsRouter);
 
 const PORT_PRODUCT = process.env.PORT_PRODUCT;
 
@@ -34,7 +34,7 @@ async function startServer() {
       console.log(`✅ Products API running on port ${PORT_PRODUCT}`);
     });
   } catch (error) {
-    console.error("❌ Error starting Products API:", error);
+    console.error('❌ Error starting Products API:', error);
     process.exit(1);
   }
 }
