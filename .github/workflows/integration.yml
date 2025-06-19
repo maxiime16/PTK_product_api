@@ -1,0 +1,32 @@
+name: Deploy to Stage
+
+on:
+  pull_request:
+    branches:
+      - "develop"
+      - "main"
+      - "feature/*"
+
+jobs:
+  lint-and-unit-test:
+    name: Lint + Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: npm ci
+      - run: npm run lint
+      #- run: npm test
+
+  integration-tests:
+    name: Integration Tests (Only on stage)
+    if: github.base_ref == 'stage'
+    needs: lint-and-unit-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm run test:integration
