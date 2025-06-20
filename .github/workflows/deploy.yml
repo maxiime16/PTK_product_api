@@ -2,8 +2,9 @@ name: Deploy to GCP VM
 
 on:
   pull_request:
+    types: [closed]
     branches:
-      - main       # Deploy to production only
+      - main
 
 jobs:
   build-and-deploy:
