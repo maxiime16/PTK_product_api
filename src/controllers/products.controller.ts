@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 import {
   findAllProducts,
   findProductById,
   createNewProduct,
   updateExistingProduct,
   removeProduct,
-} from "../services/products.service";
+} from '../services/products.service.js';
 
 export async function getAllProducts(req: Request, res: Response) {
   try {
@@ -21,7 +21,7 @@ export async function getProductById(req: Request, res: Response) {
     const { id } = req.params;
     const product = await findProductById(id);
     if (!product) {
-      return res.status(404).json({ message: "Produit introuvable" });
+      return res.status(404).json({ message: 'Produit introuvable' });
     }
     return res.json(product);
   } catch (error: any) {
@@ -43,7 +43,7 @@ export async function updateProduct(req: Request, res: Response) {
     const { id } = req.params;
     const updated = await updateExistingProduct(id, req.body);
     if (!updated) {
-      return res.status(404).json({ message: "Produit introuvable" });
+      return res.status(404).json({ message: 'Produit introuvable' });
     }
     return res.json(updated);
   } catch (error: any) {
@@ -56,9 +56,9 @@ export async function deleteProduct(req: Request, res: Response) {
     const { id } = req.params;
     const deleted = await removeProduct(id);
     if (!deleted) {
-      return res.status(404).json({ message: "Produit introuvable" });
+      return res.status(404).json({ message: 'Produit introuvable' });
     }
-    return res.json({ message: "Produit supprimé avec succès" });
+    return res.json({ message: 'Produit supprimé avec succès' });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }

@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 const productSchema = new Schema(
   {
@@ -10,7 +10,7 @@ const productSchema = new Schema(
   },
   {
     timestamps: true, // ajoute createdAt et updatedAt automatiquement
-  }
+  },
 );
 
-export const Product = model("Product", productSchema);
+export const Product = model('Product', productSchema);
