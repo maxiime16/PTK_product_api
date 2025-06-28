@@ -30,7 +30,7 @@ app.get('/metrics', async (req, res) => {
 
 const PORT_PRODUCT = process.env.PORT_PRODUCT;
 
-async function startServer() {
+export async function startServer() {
   try {
     // On attend la connexion MongoDB et RabbitMQ
     await connectDB();
@@ -47,5 +47,4 @@ async function startServer() {
     process.exit(1);
   }
 }
-
-startServer();
+export default app;
