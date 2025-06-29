@@ -3,9 +3,9 @@ name: Deploy to Stage
 on:
   pull_request:
     branches:
-      - "develop"
-      - "main"
-      - "feature/*"
+      - 'develop'
+      - 'main'
+      - 'feature/*'
 
 jobs:
   lint-and-unit-test:

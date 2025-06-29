@@ -11,23 +11,23 @@ export default [
       parser: tsParser,
       parserOptions: {
         project: './tsconfig.json',
-        sourceType: 'module'
+        sourceType: 'module',
       },
       globals: {
         console: true,
         process: true,
-        Buffer: true
-      }
+        Buffer: true,
+      },
     },
     plugins: {
       '@typescript-eslint': tsPlugin,
-      prettier
+      prettier,
     },
     rules: {
       'prettier/prettier': 'error',
-      'semi': ['error', 'always'],
-      'quotes': ['error', 'single'],
-      '@typescript-eslint/no-unused-vars': ['warn']
-    }
-  }
+      semi: ['error', 'always'],
+      quotes: ['error', 'single'],
+      '@typescript-eslint/no-unused-vars': ['warn'],
+    },
+  },
 ];

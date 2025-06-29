@@ -4,8 +4,13 @@ import helmet from 'helmet';
 import compression from 'compression';
 import { connectDB } from './config/mongoose.js';
 import { connectRabbitMQ } from './lib/rabbitmq.js';
+<<<<<<< Updated upstream
 import productsRouter from './routes/products.routes.js';
 import { consumeOrderCreated } from './services/productConsumer.js';
+=======
+import { requestLogger } from './lib/loggerMiddleware.js';
+import { metricsMiddleware } from './lib/metricsMiddleware.js';
+>>>>>>> Stashed changes
 
 const app = express();
 
@@ -38,5 +43,9 @@ async function startServer() {
     process.exit(1);
   }
 }
+<<<<<<< Updated upstream
 
 startServer();
+=======
+export default app;
+>>>>>>> Stashed changes

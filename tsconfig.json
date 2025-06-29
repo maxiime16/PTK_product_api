@@ -3,15 +3,11 @@
     "target": "ESNext",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "types": ["jest", "node"],        
+    "types": ["jest", "node"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true
   },
-  "include": [
-    "src/**/*.ts",                    
-    "**/*.test.ts",                   
-    "**/*.spec.ts"                   
-  ]
+  "include": ["src/**/*.ts", "**/*.test.ts", "**/*.spec.ts"]
 }

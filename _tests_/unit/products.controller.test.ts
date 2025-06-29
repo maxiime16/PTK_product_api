@@ -3,10 +3,10 @@ import {
   findProductById,
   createNewProduct,
   updateExistingProduct,
-  removeProduct
+  removeProduct,
 } from '../../src/services/products.service.js';
 
-import { Product } from '../../src/models/Product.js'
+import { Product } from '../../src/models/Product.js';
 
 jest.mock('../../src/models/Product.js');
 
