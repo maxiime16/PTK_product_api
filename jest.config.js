@@ -1,7 +1,3 @@
-// jest.config.js
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-
 /** @type {import('jest').Config} */
 export default {
   preset: 'ts-jest/presets/default-esm',
@@ -13,7 +9,6 @@ export default {
     },
   },
   moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1', // support des imports relatifs .js
+    '^(\\.{1,2}/.*)\\.js$': '$1',
   },
-  transform: {}, // nécessaire pour éviter la transformation redondante
 };
