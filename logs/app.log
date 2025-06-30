@@ -1,3 +1,5 @@
 {"level":30,"time":1751135067561,"pid":25640,"hostname":"DESKTOP-I2AP2EM","method":"POST","url":"/products","status":201,"duration":"68ms"}
 {"level":30,"time":1751148222055,"pid":25536,"hostname":"DESKTOP-I2AP2EM","method":"POST","url":"/products","status":201,"duration":"57ms"}
 {"level":30,"time":1751274756240,"pid":24975,"hostname":"MacBook-Air-de-Zo.local","method":"POST","url":"/products","status":500,"duration":"3ms"}
+{"level":30,"time":1751276494208,"pid":95427,"hostname":"macbookpro.home","method":"POST","url":"/products","status":201,"duration":"66ms"}
+{"level":30,"time":1751276532959,"pid":95899,"hostname":"macbookpro.home","method":"POST","url":"/products","status":201,"duration":"54ms"}

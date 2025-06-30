@@ -7,7 +7,7 @@ import app from "../../src/server.js";
 describe("Products API Integration", () => {
   let mongoServer: MongoMemoryServer;
 
-  // Crée un token d’admin valide (ou client selon tes tests)
+  // Crée un token d’admin valide (ou d'un client selon tes tests)
   const token = jwt.sign(
     { id: "test-user", role: "admin" },
     process.env.JWT_SECRET || "super-secret",
