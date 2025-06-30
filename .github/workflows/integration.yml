@@ -43,13 +43,13 @@ jobs:
           npm install -g sonarqube-scanner
 
       - name: Run SonarQube Scanner
-      
+
         run: |
           sonar-scanner \
             -Dsonar.projectKey=PTK_Product_API\
             -Dsonar.sources=. \
             -Dsonar.host.url=http://104.199.38.213:9000 \
-            -Dsonar.token=$SONAR_TOKEN
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
   integration-tests:
     name: Integration Tests (Only on stage)
