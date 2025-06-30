@@ -4,3 +4,7 @@
 {"level":30,"time":1751276494208,"pid":95427,"hostname":"macbookpro.home","method":"POST","url":"/products","status":201,"duration":"66ms"}
 {"level":30,"time":1751276532959,"pid":95899,"hostname":"macbookpro.home","method":"POST","url":"/products","status":201,"duration":"54ms"}
 {"level":30,"time":1751276837707,"pid":98458,"hostname":"macbookpro.home","method":"POST","url":"/products","status":201,"duration":"55ms"}
+{"level":30,"time":1751292565584,"pid":1892,"hostname":"MacBook-Air-de-Zo.local","method":"POST","url":"/products","status":500,"duration":"3ms"}
+{"level":30,"time":1751292588198,"pid":2333,"hostname":"MacBook-Air-de-Zo.local","method":"POST","url":"/products","status":500,"duration":"3ms"}
+{"level":30,"time":1751292617564,"pid":2806,"hostname":"MacBook-Air-de-Zo.local","method":"POST","url":"/products","status":500,"duration":"2ms"}
+{"level":30,"time":1751292653101,"pid":3219,"hostname":"MacBook-Air-de-Zo.local","method":"POST","url":"/products","status":201,"duration":"65ms"}
