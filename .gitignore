@@ -4,4 +4,3 @@ node_modules
 .env.docker
 .DS_Store
 /logs
-/coverage

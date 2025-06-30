@@ -43,8 +43,7 @@ jobs:
           npm install -g sonarqube-scanner
 
       - name: Run SonarQube Scanner
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      
         run: |
           sonar-scanner \
             -Dsonar.projectKey=PTK_Product_API\
