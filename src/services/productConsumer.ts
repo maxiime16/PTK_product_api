@@ -1,57 +1,61 @@
 import { getChannel } from '../lib/rabbitmq.js';
 import { Product } from '../models/Product.js';
+import jwt from 'jsonwebtoken';
 
 /**
- * Consomme l'événement "order.created" pour décrémenter le stock des produits commandés.
+ * Consomme l'événement "order.created" pour décrémenter le stock des produits commandés,
+ * uniquement si le token est valide.
  */
 export async function consumeOrderCreated() {
   const channel = getChannel();
-  const queueName = 'order.created'; // ou le nom que tu as choisi dans "orders-api"
+  const exchange = 'orders';
+  const queueName = 'products-api.order.created';
 
-  // Assure l'existence de la queue
+  await channel.assertExchange(exchange, 'topic', { durable: true });
   await channel.assertQueue(queueName, { durable: true });
+  await channel.bindQueue(queueName, exchange, 'order.created');
 
-  // Écoute la queue
   channel.consume(queueName, async (msg) => {
     if (!msg) return;
 
     try {
-      // Le message ressemble à :
-      // {
-      //   "event": "order.created",
-      //   "data": {
-      //     "_id": "...",
-      //     "clientId": "client-1234",
-      //     "items": [
-      //       { "productId": "p-001", "quantity": 2, "price": 8.99 },
-      //       { "productId": "p-002", "quantity": 1, "price": 12.50 }
-      //     ],
-      //     "total": 30.48
-      //   }
-      // }
       const content = JSON.parse(msg.content.toString());
-      console.log('📥·[products-api]·Received·[order.created]:', content);
-      const { items } = content.data; // la liste des produits commandés
+
+      const { token, data } = content;
+
+      // 🔒 1. Vérification de la présence du token
+      if (!token) {
+        console.warn('❌ Message rejeté : token manquant');
+        return channel.nack(msg, false, false);
+      }
+
+      // 🔒 2. Vérification du JWT
+      if (!process.env.SERVICE_SECRET) {
+        console.warn('❌ SERVICE_SECRET is not defined in environment variables');
+        return channel.nack(msg, false, false);
+      }
+      const decoded = jwt.verify(token, process.env.SERVICE_SECRET as string);
+      if (typeof decoded !== 'object' || decoded.service !== 'orders-api') {
+        console.warn('❌ Message rejeté : token invalide ou service non autorisé');
+        return channel.nack(msg, false, false);
+      }
+
+      // ✅ 3. Traitement du message
+      const { items } = data;
       if (Array.isArray(items)) {
         for (const item of items) {
           const product = await Product.findById(item.productId);
           if (product) {
-            // Décrémente le stock
             product.stock -= item.quantity;
             await product.save();
-            console.log(
-              `Stock décrémenté pour le produit ${item.productId}. Nouveau stock: ${product.stock}`,
-            );
-
-            // (Optionnel) Publier un event "product.stockUpdated"
-            // await publishProductUpdated(product);
+            console.log(`✅ Stock updated for ${item.productId}`);
           }
         }
       }
 
-      channel.ack(msg); // accuse réception
+      channel.ack(msg);
     } catch (error) {
-      console.error('❌·Error·processing·[order.created]:', error); // Selon ta stratégie, tu peux renvoyer en DLQ
+      console.error('❌ Erreur lors du traitement du message :', error);
       channel.nack(msg, false, false);
     }
   });
