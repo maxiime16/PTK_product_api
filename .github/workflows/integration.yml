@@ -49,7 +49,7 @@ jobs:
           sonar-scanner \
             -Dsonar.projectKey=PTK_Product_API\
             -Dsonar.sources=. \
-            -Dsonar.host.url=http://104.199.38.213:9000:9000 \
+            -Dsonar.host.url=http://104.199.38.213:9000 \
             -Dsonar.login=$SONAR_TOKEN
 
   integration-tests:
