@@ -21,6 +21,34 @@ jobs:
       - run: npm run lint
       - run: npm test
 
+  sonarqube-analysis:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    needs: lint-and-unit-test
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Java (required for SonarScanner)
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install SonarScanner
+        run: |
+          npm install -g sonarqube-scanner
+
+      - name: Run SonarQube Scanner
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=PTK_Product_API\
+            -Dsonar.sources=. \
+            -Dsonar.host.url=http://104.199.38.213:9000:9000 \
+            -Dsonar.login=$SONAR_TOKEN
+
   integration-tests:
     name: Integration Tests (Only on stage)
     if: github.base_ref == 'stage'

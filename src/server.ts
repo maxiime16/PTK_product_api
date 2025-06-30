@@ -11,10 +11,6 @@ import { connectRabbitMQ } from './lib/rabbitmq.js';
 import { requestLogger } from './lib/loggerMiddleware.js';
 import { metricsMiddleware } from './lib/metricsMiddleware.js';
 import { consumeOrderCreated } from './services/productConsumer.js';
-=======
-import { requestLogger } from './lib/loggerMiddleware.js';
-import { metricsMiddleware } from './lib/metricsMiddleware.js';
->>>>>>> Stashed changes
 
 const app = express();
 // Configuration des origines autorisées
