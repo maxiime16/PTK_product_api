@@ -53,7 +53,7 @@ jobs:
 
   integration-tests:
     name: Integration Tests (Only on stage)
-    if: github.base_ref == 'stage'
+    if: github.base_ref == 'develop'
     needs: lint-and-unit-test
     runs-on: ubuntu-latest
 
