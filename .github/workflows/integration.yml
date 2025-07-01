@@ -9,7 +9,7 @@ on:
 
 jobs:
   lint-and-unit-test:
-    name: Lint + Unit Tests
+    name: Lint / Unit Tests / Integration Tests + Coverage
     runs-on: ubuntu-latest
 
     env:
@@ -23,6 +23,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm test
+      - run: npm test -- --coverage
 
   sonarqube-analysis:
     name: SonarQube Analysis
@@ -50,13 +51,3 @@ jobs:
             -Dsonar.sources=. \
             -Dsonar.host.url=http://104.199.38.213:9000 \
             -Dsonar.token=${{ secrets.SONAR_TOKEN }}
-
-  integration-tests:
-    name: Integration Tests (Only on stage)
-    if: github.base_ref == 'stage'
-    needs: lint-and-unit-test
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - run: npm run test:integration
