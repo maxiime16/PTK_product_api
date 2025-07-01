@@ -1,4 +1,4 @@
-name: Deploy to GCP VM
+name: Continuous Deployment
 
 on:
   pull_request:
@@ -7,12 +7,13 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  deploy-to-production:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
       # ===============================================
-      # 1. PRÉPARATION
+      # 1. CHECKOUT ET SETUP
       # ===============================================
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,35 +25,27 @@ jobs:
           cache: 'npm'
 
       # ===============================================
-      # 2. TESTS ET BUILD
+      # 2. BUILD APPLICATION
       # ===============================================
       - name: Install dependencies
         run: npm ci
-
-      - name: Run linting
-        run: npm run lint
-        continue-on-error: true
 
       - name: Build TypeScript
         run: npm run build
 
       # ===============================================
-      # 3. CONFIGURATION ENVIRONNEMENT (PRODUCTION UNIQUEMENT)
+      # 3. CONFIGURATION ENVIRONNEMENT
       # ===============================================
       - name: Set environment variables
         run: |
-          # Nom du service depuis le repository
           SERVICE_NAME="ptk-products-api"
           echo "SERVICE_NAME=$SERVICE_NAME" >> $GITHUB_ENV
           echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)" >> $GITHUB_ENV
-          echo "DATE_TAG=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-
-          # Toujours en production maintenant
           echo "ENVIRONMENT=production" >> $GITHUB_ENV
-          echo "CONTAINER_SUFFIX=prod" >> $GITHUB_ENV
 
-          echo "🔍 Service: $SERVICE_NAME"
-          echo "🌍 Environment: production"
+          echo "Service: $SERVICE_NAME"
+          echo "Environment: production"
+          echo "SHA: $(echo ${{ github.sha }} | cut -c1-8)"
 
       # ===============================================
       # 4. BUILD ET PUSH DOCKER IMAGE
@@ -66,31 +59,27 @@ jobs:
       - name: Build and push Docker image
         run: |
           IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ env.SERVICE_NAME }}"
-
-          # Tags pour versioning (production uniquement)
+          
           TAG_PROD="production"
           TAG_SHA="production-${{ env.SHORT_SHA }}"
           TAG_DATE="production-${{ env.DATE_TAG }}"
           TAG_LATEST="production-latest"
 
-          echo "🐳 Building image: $IMAGE_NAME"
-          echo "🏷️ Tags: $TAG_PROD, $TAG_SHA, $TAG_DATE, $TAG_LATEST"
+          echo "Building image: $IMAGE_NAME"
+          echo "Tags: $TAG_PROD, $TAG_SHA, $TAG_DATE, $TAG_LATEST"
 
-          # Build l'image
           docker build -t $IMAGE_NAME:$TAG_PROD .
 
-          # Ajouter tous les tags
           docker tag $IMAGE_NAME:$TAG_PROD $IMAGE_NAME:$TAG_SHA
           docker tag $IMAGE_NAME:$TAG_PROD $IMAGE_NAME:$TAG_DATE
           docker tag $IMAGE_NAME:$TAG_PROD $IMAGE_NAME:$TAG_LATEST
 
-          # Push tous les tags
           docker push $IMAGE_NAME:$TAG_PROD
           docker push $IMAGE_NAME:$TAG_SHA
           docker push $IMAGE_NAME:$TAG_DATE
           docker push $IMAGE_NAME:$TAG_LATEST
 
-          echo "✅ Image pushed: $IMAGE_NAME:$TAG_PROD"
+          echo "✅ Image pushed successfully: $IMAGE_NAME:$TAG_PROD"
 
       # ===============================================
       # 5. AUTHENTIFICATION GCP
@@ -104,92 +93,73 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
       # ===============================================
-      # 6. DÉPLOIEMENT SUR VM GCP (PRODUCTION)
+      # 6. DÉPLOIEMENT SUR VM GCP
       # ===============================================
       - name: Deploy to GCP VM Production
         run: |
-          # Créer le script de déploiement
           cat > deploy-script.sh << 'EOF'
           #!/bin/bash
           set -e
 
           SERVICE_NAME="${{ env.SERVICE_NAME }}"
-          CONTAINER_SUFFIX="prod"
           DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
           IMAGE_TAG="production-${{ env.SHORT_SHA }}"
 
-          echo "🚀 Deploying $SERVICE_NAME to PRODUCTION"
-          echo "📦 Image: $DOCKER_USERNAME/$SERVICE_NAME:$IMAGE_TAG"
+          echo "Deploying $SERVICE_NAME to PRODUCTION"
+          echo "Image: $DOCKER_USERNAME/$SERVICE_NAME:$IMAGE_TAG"
 
-          # Aller dans le répertoire du projet
           cd /opt/payetonkawa
 
-          # Pull de la nouvelle image
-          echo "⬇️ Pulling new image..."
+          echo "Pulling new image..."
           sudo docker pull $DOCKER_USERNAME/$SERVICE_NAME:$IMAGE_TAG
 
-          # Tag comme production pour docker-compose
-          sudo docker tag $DOCKER_USERNAME/$SERVICE_NAME:$IMAGE_TAG $DOCKER_USERNAME/$SERVICE_NAME:production
-
-          # Identifier le service à redémarrer
           COMPOSE_SERVICE="products-api-prod"
 
-          echo "🔄 Restarting service: $COMPOSE_SERVICE"
+          echo "Restarting service: $COMPOSE_SERVICE"
 
-          # Mettre à jour le .env avec la nouvelle image
           sudo sed -i "s|DOCKER_REGISTRY=.*|DOCKER_REGISTRY=$DOCKER_USERNAME|g" .env
 
-          # Arrêter et supprimer le container existant
           sudo docker-compose stop $COMPOSE_SERVICE || true
           sudo docker-compose rm -f $COMPOSE_SERVICE || true
 
-          # Redémarrer avec la nouvelle image
           sudo docker-compose up -d $COMPOSE_SERVICE
 
-          # Attendre que le service soit prêt
-          echo "⏳ Waiting for service to be ready..."
+          echo "Waiting for service to be ready..."
           sleep 30
 
-          # Health check sur le port de production
           HEALTH_PORT="4003"
 
-          echo "🏥 Health check on port $HEALTH_PORT"
+          echo "Health check on port $HEALTH_PORT"
 
-          # Tenter le health check (plusieurs essais)
           for i in {1..5}; do
             if curl -f http://localhost:$HEALTH_PORT/health 2>/dev/null; then
-              echo "✅ Service $COMPOSE_SERVICE is healthy!"
+              echo "✅ Service $COMPOSE_SERVICE is healthy"
               break
             elif [ $i -eq 5 ]; then
-              echo "⚠️ Health check failed, but service might still be starting"
-              echo "📋 Container status:"
+              echo "❌ Health check failed, service might still be starting"
+              echo "Container status:"
               sudo docker ps | grep $COMPOSE_SERVICE || echo "Container not found"
               sudo docker-compose logs --tail=20 $COMPOSE_SERVICE || echo "No logs available"
             else
-              echo "⏳ Attempt $i/5 failed, retrying in 10 seconds..."
+              echo "Attempt $i/5 failed, retrying in 10 seconds..."
               sleep 10
             fi
           done
 
-          # Nettoyer les anciennes images (garder les 5 dernières)
-          echo "🧹 Cleaning old images..."
+          echo "Cleaning old images..."
           sudo docker images $DOCKER_USERNAME/$SERVICE_NAME --format "table {{.Tag}}\t{{.CreatedAt}}" | grep -v TAG | sort -k2 -r | tail -n +6 | awk '{print "'$DOCKER_USERNAME'/'$SERVICE_NAME':"$1}' | xargs -r sudo docker rmi || true
 
-          echo "🎉 Production deployment completed!"
+          echo "✅ Production deployment completed successfully"
           EOF
 
-          # Rendre le script exécutable
           chmod +x deploy-script.sh
 
-          # Copier et exécuter sur la VM via gcloud
-          echo "📡 Connecting to VM ${{ secrets.GCP_VM_NAME }}..."
+          echo "Connecting to VM ${{ secrets.GCP_VM_NAME }}..."
 
-          # Copier le script sur la VM
           gcloud compute scp deploy-script.sh ${{ secrets.GCP_VM_NAME }}:/tmp/ \
             --zone=${{ secrets.GCP_ZONE }} \
             --project=${{ secrets.GCP_PROJECT_ID }}
 
-          # Exécuter le script sur la VM
           gcloud compute ssh ${{ secrets.GCP_VM_NAME }} \
             --zone=${{ secrets.GCP_ZONE }} \
             --project=${{ secrets.GCP_PROJECT_ID }} \
@@ -198,19 +168,19 @@ jobs:
       # ===============================================
       # 7. NOTIFICATIONS
       # ===============================================
-      - name: Production deployment success
+      - name: Deployment success notification
         if: success()
         run: |
-          echo "🎉 Production deployment successful!"
-          echo "📦 Service: ${{ env.SERVICE_NAME }}"
-          echo "🌍 Environment: PRODUCTION"
-          echo "🏷️ Image: ${{ secrets.DOCKER_USERNAME }}/${{ env.SERVICE_NAME }}:production-${{ env.SHORT_SHA }}"
-          echo "🔗 API URL: http://${{ secrets.VM_EXTERNAL_IP }}:4003/health"
+          echo "✅ Production deployment successful"
+          echo "Service: ${{ env.SERVICE_NAME }}"
+          echo "Environment: PRODUCTION"
+          echo "Image: ${{ secrets.DOCKER_USERNAME }}/${{ env.SERVICE_NAME }}:production-${{ env.SHORT_SHA }}"
+          echo "API URL: http://${{ secrets.VM_EXTERNAL_IP }}:4003/health"
 
-      - name: Production deployment failure
+      - name: Deployment failure notification
         if: failure()
         run: |
-          echo "❌ Production deployment failed!"
-          echo "📦 Service: ${{ env.SERVICE_NAME }}"
-          echo "🌍 Environment: PRODUCTION"
-          echo "🔗 Check logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo "❌ Production deployment failed"
+          echo "Service: ${{ env.SERVICE_NAME }}"
+          echo "Environment: PRODUCTION"
+          echo "Check logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
