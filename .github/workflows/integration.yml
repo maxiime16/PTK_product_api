@@ -9,7 +9,7 @@ on:
 
 jobs:
   lint-and-unit-test:
-    name: Lint + Unit Tests
+    name: Lint / Unit Tests / Integration Tests + Coverage
     runs-on: ubuntu-latest
 
     env:
@@ -23,6 +23,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm test
+      - run: npm test -- --coverage
 
   sonarqube-analysis:
     name: SonarQube Analysis
