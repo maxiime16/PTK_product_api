@@ -10,7 +10,7 @@ export async function connectDB() {
     if (!MONGODB_PRODUCT_URI) {
       throw new Error('MONGODB_URI_PRODUCT is not defined in the environment variables.');
     }
-    await mongoose.connect(MONGODB_PRODUCT_URI, { 
+    await mongoose.connect(MONGODB_PRODUCT_URI, {
       // useNewUrlParser: true,
       // useUnifiedTopology: true,
       // Les options peuvent varier selon la version de mongoose
