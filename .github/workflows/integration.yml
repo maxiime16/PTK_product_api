@@ -1,11 +1,19 @@
 name: Deploy to Stage
 
 on:
+  # Pour les branches feature : test à chaque push
+  push:
+    branches:
+      - 'feature/**'
+      - 'hotfix/**'
+      - 'release/**'
+
+  # Pour develop/main : test seulement sur pull request
   pull_request:
     branches:
-      - 'develop'
-      - 'main'
-      - 'feature/*'
+      - develop
+      - main
+
 
 jobs:
   lint-and-unit-test:
