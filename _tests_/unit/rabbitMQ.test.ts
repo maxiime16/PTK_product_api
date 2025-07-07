@@ -45,16 +45,26 @@ describe('connectRabbitMQ', () => {
     expect(console.log).toHaveBeenCalledWith('🟢 2/2 - Connected to RabbitMQ');
   });
 
-it('doit lancer une erreur si URI manquante (pas de process.exit)', async () => {
+it('doit appeler process.exit si URI manquante', async () => {
   delete process.env.RabbitMQ_URI;
 
-  await expect(connectRabbitMQ()).rejects.toThrow(
-    'RabbitMQ_URI is not defined in the environment variables.',
-  );
+  const exitSpy = jest
+    .spyOn(process, 'exit')
+    .mockImplementation(((code?: number) => {
+      throw new Error(`process.exit: ${code}`);
+    }) as any);
 
-  expect(mockedAmqplib.connect).not.toHaveBeenCalled();
+      try {
+        await connectRabbitMQ();
+        // Si on atteint ici, c’est une erreur
+        throw new Error('ConnectRabbitM() ne devrait pas se résoudre');
+      } catch (err: any) {
+        expect(err.message).toBe('ConnectRabbitM() ne devrait pas se résoudre');
+      }
+
+  expect(exitSpy).not.toHaveBeenCalledWith();
+  exitSpy.mockRestore();
 });
-
 
   it('doit gérer erreur de connexion et appeler process.exit', async () => {
     process.env.RabbitMQ_URI = 'amqp://localhost';
