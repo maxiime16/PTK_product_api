@@ -8350,3 +8350,14 @@
 {"level":30,"time":1751965654299,"pid":59115,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"59ms"}
 {"level":30,"time":1751966050881,"pid":59849,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"59ms"}
 {"level":30,"time":1751966070537,"pid":59939,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"57ms"}
+{"level":30,"time":1751966477015,"pid":60510,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"142ms"}
+{"level":30,"time":1751966490720,"pid":60590,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"68ms"}
+{"level":30,"time":1751966562066,"pid":60777,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"57ms"}
+{"level":30,"time":1751966621602,"pid":60949,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"55ms"}
+{"level":30,"time":1751966724163,"pid":61092,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"59ms"}
+{"level":30,"time":1751966742256,"pid":61178,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"58ms"}
+{"level":30,"time":1751967049930,"pid":61439,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"55ms"}
+{"level":30,"time":1751967124116,"pid":61530,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"54ms"}
+{"level":30,"time":1751967136668,"pid":61625,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"61ms"}
+{"level":30,"time":1751967215292,"pid":61745,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"58ms"}
+{"level":30,"time":1751967239097,"pid":61910,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"62ms"}

@@ -11,7 +11,6 @@ export default {
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
-  collectCoverage: true,
   collectCoverageFrom: [
     "src/**/*.{ts,tsx,js,jsx}",        // ✅ Inclut tous les fichiers source
     "!src/config/**",                 // ⛔ Ignore tout le dossier config
@@ -20,5 +19,11 @@ export default {
     "!src/start.ts",                 // ⛔ Fichier de démarrage
     "!src/lib/loggerMiddleware.ts",  // ⛔ Middleware sans logique métier
     "!src/lib/metricsMiddleware.ts"  // ⛔ Pareil
-  ]
+  ],
+  global: {
+    branches: 95,
+    functions: 95,
+    lines: 95,
+    statements: 95,
+  },
 };
