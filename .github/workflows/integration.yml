@@ -64,8 +64,8 @@ jobs:
     name: Integration Tests (Only on stage)
     needs: lint-and-unit-test
     runs-on: ubuntu-latest
-    run: npm ci
 
     steps:
       - uses: actions/checkout@v3
+      - run: npm ci
       - run: npm run test:integration
