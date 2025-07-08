@@ -8336,3 +8336,17 @@
 {"level":30,"time":1751963531929,"pid":56268,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"54ms"}
 {"level":30,"time":1751963652040,"pid":56430,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"67ms"}
 {"level":30,"time":1751963759390,"pid":56558,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"59ms"}
+{"level":30,"time":1751964230601,"pid":56945,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"68ms"}
+{"level":30,"time":1751964702393,"pid":57598,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"58ms"}
+{"level":30,"time":1751964730830,"pid":57751,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"61ms"}
+{"level":30,"time":1751964851054,"pid":57828,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"68ms"}
+{"level":30,"time":1751965064745,"pid":58277,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"55ms"}
+{"level":30,"time":1751965253901,"pid":58402,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"64ms"}
+{"level":30,"time":1751965271378,"pid":58510,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"58ms"}
+{"level":30,"time":1751965285901,"pid":58610,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"54ms"}
+{"level":30,"time":1751965499521,"pid":58731,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"62ms"}
+{"level":30,"time":1751965599144,"pid":58878,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"57ms"}
+{"level":30,"time":1751965642822,"pid":58995,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"55ms"}
+{"level":30,"time":1751965654299,"pid":59115,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"59ms"}
+{"level":30,"time":1751966050881,"pid":59849,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"59ms"}
+{"level":30,"time":1751966070537,"pid":59939,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"57ms"}
