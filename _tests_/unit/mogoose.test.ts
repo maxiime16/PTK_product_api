@@ -63,9 +63,6 @@ it('doit appeler process.exit si URI manquante', async () => {
   expect(mockedMongoose.connect).not.toHaveBeenCalled();
   exitSpy.mockRestore();
 });
-
-
-
   it('doit gérer erreur de connexion et appeler process.exit', async () => {
     process.env.MONGODB_PRODUCT_URI =
       'mongodb://mspr:mspr@localhost:27017/products_db?authSource=admin';

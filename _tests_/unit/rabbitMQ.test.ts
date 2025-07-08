@@ -36,7 +36,7 @@ describe('connectRabbitMQ', () => {
   });
 
   it('devrait se connecter à RabbitMQ si URI définie', async () => {
-    process.env.RabbitMQ_URI = 'amqp://localhost';
+    process.env.RabbitMQ_URI = 'amqp://mspr:mspr@localhost:5672';
 
     await connectRabbitMQ();
 
@@ -45,29 +45,29 @@ describe('connectRabbitMQ', () => {
     expect(console.log).toHaveBeenCalledWith('🟢 2/2 - Connected to RabbitMQ');
   });
 
-it('doit appeler process.exit si URI manquante', async () => {
-  delete process.env.RabbitMQ_URI;
+  it('doit appeler process.exit si URI manquante', async () => {
+    delete process.env.RabbitMQ_URI;
 
-  const exitSpy = jest
-    .spyOn(process, 'exit')
-    .mockImplementation(((code?: number) => {
-      throw new Error(`process.exit: ${code}`);
-    }) as any);
+    const exitSpy = jest
+      .spyOn(process, 'exit')
+      .mockImplementation(((code?: number) => {
+        throw new Error(`process.exit: ${code}`);
+      }) as any);
 
-      try {
-        await connectRabbitMQ();
-        // Si on atteint ici, c’est une erreur
-        throw new Error('ConnectRabbitM() ne devrait pas se résoudre');
-      } catch (err: any) {
-        expect(err.message).toBe('ConnectRabbitM() ne devrait pas se résoudre');
-      }
+    try {
+      await connectRabbitMQ();
+      throw new Error('La fonction aurait dû provoquer process.exit');
+    } catch (err: any) {
+      expect(err.message).toBe('process.exit: 1');
+    }
 
-  expect(exitSpy).not.toHaveBeenCalledWith();
-  exitSpy.mockRestore();
+    expect(exitSpy).toHaveBeenCalledWith(1);
+
+    exitSpy.mockRestore();
 });
 
   it('doit gérer erreur de connexion et appeler process.exit', async () => {
-    process.env.RabbitMQ_URI = 'amqp://localhost';
+    process.env.RabbitMQ_URI = 'amqp://mspr:mspr@localhost:5672';
     mockedAmqplib.connect.mockRejectedValue(new Error('Connection failed'));
 
     const exitSpy = jest.spyOn(process, 'exit').mockImplementation(((code?: number) => {

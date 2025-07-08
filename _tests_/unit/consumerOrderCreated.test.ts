@@ -160,4 +160,35 @@ describe('consumeOrderCreated', () => {
 
     expect(fakeChannel.nack).toHaveBeenCalledWith(fakeMsg, false, false);
   });
+
+  it("rejette le message si SERVICE_SECRET n'est pas défini", async () => {
+    delete process.env.SERVICE_SECRET;
+
+    const fakeMsg = {
+      content: Buffer.from(JSON.stringify({
+        token: 'any-token',
+        data: { items: [{ productId: '123', quantity: 1 }] },
+      })),
+    };
+
+    (fakeChannel.consume as jest.Mock).mockImplementation((_queue, cb) => cb(fakeMsg));
+
+    await consumeOrderCreated();
+    await new Promise((resolve) => setImmediate(resolve));
+
+    expect(fakeChannel.nack).toHaveBeenCalledWith(fakeMsg, false, false);
+  });
+
+  // ✅ Nouveau test pour couvrir la ligne 19
+  it('ignore les messages null (ligne 19)', async () => {
+    (fakeChannel.consume as jest.Mock).mockImplementation((_queue, callback) => {
+      callback(null); // msg = null → couvre ligne 19
+    });
+
+    await consumeOrderCreated();
+    await new Promise((resolve) => setImmediate(resolve));
+
+    expect(fakeChannel.ack).not.toHaveBeenCalled();
+    expect(fakeChannel.nack).not.toHaveBeenCalled();
+  });
 });

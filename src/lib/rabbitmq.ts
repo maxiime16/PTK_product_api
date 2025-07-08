@@ -2,12 +2,12 @@ import * as amqplib from 'amqplib';
 import dotenv from 'dotenv';
 
 dotenv.config();
-const RabbitMQ_URI = process.env.RabbitMQ_URI;
 
 let connection: amqplib.ChannelModel | null = null;
 let channel: amqplib.Channel | null = null;
 
 export async function connectRabbitMQ() {
+  const RabbitMQ_URI = process.env.RabbitMQ_URI;
   try {
     if (!RabbitMQ_URI) {
       throw new Error('RabbitMQ_URI is not defined in the environment variables.');

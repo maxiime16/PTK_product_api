@@ -57,6 +57,13 @@ describe('Products Controller', () => {
       expect(productService.findAllProducts).toHaveBeenCalled();
       expect(jsonMock).toHaveBeenCalledWith(mockProducts);
     });
+
+    it('should return 500 if service throws an error', async () => {
+      jest.spyOn(productService, 'findAllProducts').mockRejectedValue(new Error('Erreur serveur'));
+      await getAllProducts(req as Request, res as Response);
+      expect(statusMock).toHaveBeenCalledWith(500);
+      expect(jsonMock).toHaveBeenCalledWith({ error: 'Erreur serveur' });
+    });
   });
 
   describe('getProductById', () => {
@@ -89,6 +96,14 @@ describe('Products Controller', () => {
       expect(statusMock).toHaveBeenCalledWith(404);
       expect(jsonMock).toHaveBeenCalledWith({ message: 'Produit introuvable' });
     });
+
+    it('should return 500 if service throws an error', async () => {
+      req.params = { id: '1' };
+      jest.spyOn(productService, 'findProductById').mockRejectedValue(new Error('Erreur serveur'));
+      await getProductById(req as Request, res as Response);
+      expect(statusMock).toHaveBeenCalledWith(500);
+      expect(jsonMock).toHaveBeenCalledWith({ error: 'Erreur serveur' });
+    });
   });
 
   describe('createProduct', () => {
@@ -115,6 +130,13 @@ describe('Products Controller', () => {
       expect(productService.createNewProduct).toHaveBeenCalledWith(productData);
       expect(statusMock).toHaveBeenCalledWith(201);
       expect(jsonMock).toHaveBeenCalledWith(createdProduct);
+    });
+
+    it('should return 400 if service throws an error', async () => {
+      jest.spyOn(productService, 'createNewProduct').mockRejectedValue(new Error('Erreur validation'));
+      await createProduct(req as Request, res as Response);
+      expect(statusMock).toHaveBeenCalledWith(400);
+      expect(jsonMock).toHaveBeenCalledWith({ error: 'Erreur validation' });
     });
   });
 
@@ -156,41 +178,54 @@ describe('Products Controller', () => {
       expect(statusMock).toHaveBeenCalledWith(404);
       expect(jsonMock).toHaveBeenCalledWith({ message: 'Produit introuvable' });
     });
+
+    it('should return 400 if service throws an error', async () => {
+      req.params = { id: '1' };
+      jest.spyOn(productService, 'updateExistingProduct').mockRejectedValue(new Error('Erreur validation'));
+      await updateProduct(req as Request, res as Response);
+      expect(statusMock).toHaveBeenCalledWith(400);
+      expect(jsonMock).toHaveBeenCalledWith({ error: 'Erreur validation' });
+    });
   });
 
-describe('deleteProduct', () => {
-  it('should delete product and return 200 with success message', async () => {
-    req.params = { id: '1' };
+  describe('deleteProduct', () => {
+    it('should delete product and return 200 with success message', async () => {
+      req.params = { id: '1' };
 
-    const mockDeletedProduct = {
-      _id: '1',
-      name: 'Deleted Product',
-      price: 20,
-      stock: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+      const mockDeletedProduct = {
+        _id: '1',
+        name: 'Deleted Product',
+        price: 20,
+        stock: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
-    jest
-      .spyOn(productService, 'removeProduct')
-      .mockResolvedValue(mockDeletedProduct as any);
+      jest.spyOn(productService, 'removeProduct').mockResolvedValue(mockDeletedProduct as any);
 
-    await deleteProduct(req as Request, res as Response);
+      await deleteProduct(req as Request, res as Response);
 
-    expect(productService.removeProduct).toHaveBeenCalledWith('1');
-    expect(jsonMock).toHaveBeenCalledWith({ message: 'Produit supprimé avec succès' });
+      expect(productService.removeProduct).toHaveBeenCalledWith('1');
+      expect(jsonMock).toHaveBeenCalledWith({ message: 'Produit supprimé avec succès' });
+    });
+
+    it('should return 404 if product to delete not found', async () => {
+      req.params = { id: '1' };
+
+      jest.spyOn(productService, 'removeProduct').mockResolvedValue(null);
+
+      await deleteProduct(req as Request, res as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(404);
+      expect(jsonMock).toHaveBeenCalledWith({ message: 'Produit introuvable' });
+    });
+
+    it('should return 500 if service throws an error', async () => {
+      req.params = { id: '1' };
+      jest.spyOn(productService, 'removeProduct').mockRejectedValue(new Error('Erreur serveur'));
+      await deleteProduct(req as Request, res as Response);
+      expect(statusMock).toHaveBeenCalledWith(500);
+      expect(jsonMock).toHaveBeenCalledWith({ error: 'Erreur serveur' });
+    });
   });
-
-  it('should return 404 if product to delete not found', async () => {
-    req.params = { id: '1' };
-
-    jest.spyOn(productService, 'removeProduct').mockResolvedValue(null);
-
-    await deleteProduct(req as Request, res as Response);
-
-    expect(statusMock).toHaveBeenCalledWith(404);
-    expect(jsonMock).toHaveBeenCalledWith({ message: 'Produit introuvable' });
-  });
-});
-
 });
