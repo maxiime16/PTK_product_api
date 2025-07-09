@@ -61,23 +61,12 @@ jobs:
           IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ env.SERVICE_NAME }}"
           
           TAG_PROD="production"
-          TAG_SHA="production-${{ env.SHORT_SHA }}"
-          TAG_DATE="production-${{ env.DATE_TAG }}"
-          TAG_LATEST="production-latest"
 
           echo "Building image: $IMAGE_NAME"
-          echo "Tags: $TAG_PROD, $TAG_SHA, $TAG_DATE, $TAG_LATEST"
 
           docker build -t $IMAGE_NAME:$TAG_PROD .
 
-          docker tag $IMAGE_NAME:$TAG_PROD $IMAGE_NAME:$TAG_SHA
-          docker tag $IMAGE_NAME:$TAG_PROD $IMAGE_NAME:$TAG_DATE
-          docker tag $IMAGE_NAME:$TAG_PROD $IMAGE_NAME:$TAG_LATEST
-
           docker push $IMAGE_NAME:$TAG_PROD
-          docker push $IMAGE_NAME:$TAG_SHA
-          docker push $IMAGE_NAME:$TAG_DATE
-          docker push $IMAGE_NAME:$TAG_LATEST
 
           echo "✅ Image pushed successfully: $IMAGE_NAME:$TAG_PROD"
 
