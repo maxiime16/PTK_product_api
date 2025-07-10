@@ -7,7 +7,6 @@ import app from "../../src/server.js";
 describe("Products API Integration", () => {
   let mongoServer: MongoMemoryServer;
 
-  // Crée un token d’admin valide (ou client selon tes tests)
   const token = jwt.sign(
     { id: "test-user", role: "admin" },
     process.env.JWT_SECRET || "super-secret",
@@ -34,7 +33,7 @@ describe("Products API Integration", () => {
   it("should create a product", async () => {
     const res = await request(app)
       .post("/products")
-      .set("Authorization", `Bearer ${token}`) // injecte le token ici
+      .set("Authorization", `Bearer ${token}`)
       .send({
         name: "Test Product",
         price: 42,

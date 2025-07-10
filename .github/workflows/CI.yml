@@ -1,4 +1,4 @@
-name: Deploy to Stage
+name: CI
 
 on:
   # Pour les branches feature : test à chaque push
@@ -59,3 +59,4 @@ jobs:
             -Dsonar.sources=. \
             -Dsonar.host.url=http://104.199.38.213:9000 \
             -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+          

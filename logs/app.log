@@ -8364,3 +8364,5 @@
 {"level":30,"time":1751971678733,"pid":63492,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"59ms"}
 {"level":30,"time":1751972252502,"pid":63762,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"60ms"}
 {"level":30,"time":1751972290832,"pid":63850,"hostname":"macbookair.home","method":"POST","url":"/products","status":201,"duration":"63ms"}
+{"level":30,"time":1752082003638,"pid":94589,"hostname":"MacBook-Air-de-Zo.local","method":"POST","url":"/products","status":201,"duration":"57ms"}
+{"level":30,"time":1752106701208,"pid":32258,"hostname":"MacBook-Air-de-Zo.local","method":"POST","url":"/products","status":201,"duration":"61ms"}
