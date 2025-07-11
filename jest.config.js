@@ -20,10 +20,12 @@ export default {
     "!src/lib/loggerMiddleware.ts",  // ⛔ Middleware sans logique métier
     "!src/lib/metricsMiddleware.ts"  // ⛔ Pareil
   ],
-  global: {
-    branches: 95,
-    functions: 95,
-    lines: 95,
-    statements: 95,
+  coverageThreshold: {
+    global: {
+      branches: 95,
+      functions: 95,
+      lines: 95,
+      statements: 95,
+    },
   },
 };
